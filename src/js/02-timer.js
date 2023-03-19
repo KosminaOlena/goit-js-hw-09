@@ -1,5 +1,6 @@
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import Notiflix from 'notiflix';
 
 const refs = {
 
@@ -10,11 +11,10 @@ const refs = {
     minutes: document.querySelector('span[data-minutes]'),
     seconds: document.querySelector('span[data-seconds]'), 
 };
-refs.startBtn.setAttribute("disabled", "true");
 
 let SELECTED_DATE = new Date();
 let delta;
-
+refs.startBtn.disabled = true;
 
 const options = {
   enableTime: true,
@@ -23,21 +23,19 @@ const options = {
   minuteIncrement: 1,
     onClose(selectedDates) {
         if (selectedDates[0] < Date.now()) {
-            console.log('нужна другая дата');
+            Notiflix.Notify.failure('Please choose a date in the future');
         } else {
-            refs.startBtn.removeAttribute("disabled");
+            refs.startBtn.disabled = false;
             this.defaultDate = selectedDates[0];
             SELECTED_DATE = selectedDates[0];
       }
   },
 };
 
-
 refs.startBtn.addEventListener('click', onStartTimer);
 
-
 function onStartTimer() {
-    console.log('клікнули start');
+    refs.startBtn.disabled = true;
     const timerId = setInterval(() => {
         delta = SELECTED_DATE - Date.now();
         const timerContent = convertMs(delta);
